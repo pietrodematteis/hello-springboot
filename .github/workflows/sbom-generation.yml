@@ -1,0 +1,22 @@
+name: Generate SBOM
+
+on:
+  push:
+    branches:
+      - 'master'          # Default branch
+      - 'feature-**'      # Feature branches
+    paths-ignore:
+      - '**/*.md'
+      - 'docs/**'
+  workflow_dispatch:
+
+permissions: { }
+
+jobs:
+  call-build:
+    uses: cleansefbk/infra-ci/.github/workflows/cdxgen_sbom.yml@0.0.1
+    with:
+      src_repository: ${{ github.repository }}
+      src_branch: ${{ github.ref_name }}
+      src_type: 'java'
+      src_profile: 'license-compliance'
