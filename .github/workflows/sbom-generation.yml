@@ -20,3 +20,6 @@ jobs:
       src_branch: ${{ github.ref_name }}
       src_type: 'java'
       src_profile: 'license-compliance'
+    permissions:
+      security-events: write # Required to upload SBOM output
+    
