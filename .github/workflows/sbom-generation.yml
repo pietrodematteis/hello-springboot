@@ -14,7 +14,7 @@ permissions: { }
 
 jobs:
   call-build:
-    uses: cleansefbk/infra-ci/.github/workflows/cdxgen_sbom.yml@0.0.1
+    uses: cleansefbk/infra-ci/.github/workflows/cdxgen_sbom.yml@main
     with:
       src_repository: ${{ github.repository }}
       src_branch: ${{ github.ref_name }}
