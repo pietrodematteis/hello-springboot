@@ -15,6 +15,16 @@ on:
         type: string
         required: true
         description: "Short ref name of the branch or tag that triggered the workflow run"
+      src_type:
+        description: 'Project Type (java, python, dotnet) see https://cyclonedx.github.io/cdxgen/#/PROJECT_TYPES'
+        type: string
+        required: false
+        default: 'java'
+      src_profile:
+        description: BOM profile to use for generation. Default generic.
+        type: string
+        required: false
+        default: 'generic'
     secrets:
       registry-0-usr:
         required: true
@@ -40,6 +50,15 @@ jobs:
       - name: Build with Maven
         run: |-
           mvn -B package 
+    
+      - name: Generate SBOM using cdxgen container
+        run: |
+          docker run --rm \
+            -v target:/app:rw \
+            -v /tmp:/tmp \
+            -t ghcr.io/cyclonedx/cdxgen:latest \
+            -r /app -o ./bom.json -t ${{ inputs.src_type }} \
+            --profile ${{ inputs.src_profile }} --json-pretty
           
       - name: Upload Artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
