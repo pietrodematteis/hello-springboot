@@ -56,7 +56,7 @@ jobs:
             -v $(pwd):/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:latest \
-            -r /app -o bom.json -t ${{ inputs.src_type }} \
+            -r /app -o /tmp/bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
 
       - name: list files
@@ -72,6 +72,6 @@ jobs:
           name: assembled-wars
           path: |-
             target/*.jar
-            $(pwd)/bom.json
+            tmp/bom.json
 
   
