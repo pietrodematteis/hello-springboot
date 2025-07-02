@@ -47,13 +47,16 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
+      - name: list files
+        run: ls -la
+    
       - name: Generate SBOM using cdxgen container
         run: |
           docker run --rm \
             -v $(pwd):/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:latest \
-            -r /app -o ./bom.json -t ${{ inputs.src_type }} \
+            -r /app -o bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
 
       - name: list files
@@ -69,6 +72,6 @@ jobs:
           name: assembled-wars
           path: |-
             target/*.jar
-            ./bom.json
+            $(pwd)/bom.json
 
   
