@@ -47,25 +47,25 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: Build with Maven
-        run: |-
-          mvn -B package 
-    
       - name: Generate SBOM using cdxgen container
         run: |
           docker run --rm \
-            -v target:/app:rw \
+            -v .:/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:latest \
             -r /app -o ./bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
           
+      - name: Build with Maven
+        run: |-
+          mvn -B package 
+    
       - name: Upload Artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
         with:
           name: assembled-wars
           path: |-
             target/*.jar
-            target/bom.json
+            ./bom.json
 
   
