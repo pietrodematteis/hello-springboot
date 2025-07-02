@@ -50,12 +50,15 @@ jobs:
       - name: Generate SBOM using cdxgen container
         run: |
           docker run --rm \
-            -v .:/app:rw \
+            -v $(pwd):/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:latest \
             -r /app -o ./bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
-          
+
+      - name: list files
+        run: ls -la
+    
       - name: Build with Maven
         run: |-
           mvn -B package 
