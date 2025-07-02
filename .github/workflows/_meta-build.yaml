@@ -1,0 +1,52 @@
+on:
+  workflow_call:
+    inputs:
+      app-version:
+        type: string
+        required: false
+        default: "snapshot"
+        description: "the version that should be set/used as tag for the container image"
+      publish-container:
+        type: boolean
+        required: false
+        default: false
+        description: "publish and scan the container image once its built"
+      ref-name:
+        type: string
+        required: true
+        description: "Short ref name of the branch or tag that triggered the workflow run"
+    secrets:
+      registry-0-usr:
+        required: true
+      registry-0-psw:
+        required: true
+
+permissions: { }
+
+jobs:
+  build-java:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
+
+      - name: Set up JDK
+        uses: actions/setup-java@c5195efecf7bdfc987ee8bae7a71cb8b11521c00 # tag=v4.7.1
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'maven'
+
+      - name: Build with Maven
+        run: |-
+          mvn -B package 
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
+        with:
+          name: assembled-wars
+          path: |-
+            target/*.jar
+            target/bom.json
+
+  
