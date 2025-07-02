@@ -72,6 +72,6 @@ jobs:
           name: assembled-wars
           path: |-
             target/*.jar
-            tmp/bom.json
+            /tmp/bom.json
 
   
