@@ -3,7 +3,7 @@ name: Build CI
 on:
   push:
     branches:
-      - 'master'          # Default branch
+      - 'main'            # Default branch
       - 'feature-**'      # Feature branches
       - '[0-9]+.[0-9]+.x' # Release branches
     paths-ignore:
@@ -11,7 +11,7 @@ on:
       - 'docs/**'
   pull_request:
     branches:
-      - 'master'          # Default branch
+      - 'main'            # Default branch
       - 'feature-**'      # Feature branches
     paths-ignore:
       - '**/*.md'
