@@ -62,7 +62,7 @@ jobs:
 
       - name: Update Release
         env:
-          GITHUB_TOKEN: ${{ secrets.BOT_RELEASE_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |-
           gh release upload ${{ needs.read-version.outputs.version }} \
             --clobber \
