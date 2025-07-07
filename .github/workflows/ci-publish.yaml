@@ -25,12 +25,18 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
 
-      - name: Parse Version from POM
+      #- name: Parse Version from POM
+      #  id: parse
+      #  run: |-
+      #    VERSION=`yq -p=xml '.project.version' pom.xml`
+      #    echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      
+      - name: Parse Version from Tag
         id: parse
         run: |-
-          VERSION=`yq -p=xml '.project.version' pom.xml`
+          VERSION=${{github.ref_name }}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
+      
   call-build:
     needs:
       - read-version
