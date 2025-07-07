@@ -47,9 +47,6 @@ jobs:
           java-version: '21'
           cache: 'maven'
 
-      - name: list files
-        run: ls -la
-    
       - name: Generate SBOM using cdxgen container
         run: |
           docker run --rm \
@@ -61,7 +58,7 @@ jobs:
 
       - name: Build with Maven
         run: |-
-          mvn -B package 
+          mvn -B package -Dproject.version=${{ inputs.app-version}} #file name cames from tag
       
       - name: Copy SBOM into target folder
         run: cp /tmp/bom.json  $(pwd)/target/bom.json
