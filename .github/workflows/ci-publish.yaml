@@ -22,9 +22,9 @@ jobs:
             echo "::error::Publishing is only supported for tags!"
             exit 1
           fi
-      - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
-
+      #- name: Checkout Repository
+      #  uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
+      #
       #- name: Parse Version from POM
       #  id: parse
       #  run: |-
@@ -57,8 +57,8 @@ jobs:
       - read-version
       - call-build
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
+      #- name: Checkout Repository
+      #  uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
 
       - name: Download Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # tag=v4.3.0
