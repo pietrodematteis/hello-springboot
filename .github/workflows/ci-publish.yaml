@@ -59,12 +59,21 @@ jobs:
       - name: list files
         run: ls -la target
 
-      - name: Release
-        uses: softprops/action-gh-release@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
-          token: ${{ github.token }}
-          files: |
+          name: my-artifact # NOTE: same artifact name
+          path: |-
+            target/*.jar
             target/bom.json
+          overwrite: true
+          
+      #- name: Release
+      #  uses: softprops/action-gh-release@v2
+      #  with:
+      #    token: ${{ github.token }}
+      #    files: |
+      #      target/bom.json
             
       #- name: Update Release
       #  env:
