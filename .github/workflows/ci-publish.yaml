@@ -59,12 +59,23 @@ jobs:
       - name: list files
         run: ls -la target
 
-      - name: Release
-        uses: softprops/action-gh-release@v2
-        with:
-          token: ${{ secrets.BOT_PUBLISH_TOKEN }}
-          files: |
-            target/bom.json
+      - name: Set up GitHub CLI
+        uses: cli/cli-action@v2
+
+      - name: Authenticate GitHub CLI
+        run: echo "Authenticated"
+        env:
+          GH_TOKEN:${{ secrets.PERSONAL_GITHUB_TOKEN }} # or use github.token if
+          
+      - name: Create or update release
+        run: gh release upload ${{ needs.read-version.outputs.version }} target/bom.json --clobber
+
+      #- name: Release
+      #  uses: softprops/action-gh-release@v2
+      #  with:
+      #    token: ${{ secrets.BOT_PUBLISH_TOKEN }}
+      #    files: |
+      #      target/bom.json
             
       #- name: Update Release
       #  env:
