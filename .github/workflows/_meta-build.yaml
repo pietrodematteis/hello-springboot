@@ -56,10 +56,9 @@ jobs:
             -r /app -o /tmp/bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
 
-
       - name: Override project version
-        run: mvn versions:set -DnewVersion=${{ inputs.src_profile }}
-
+        run: mvn versions:set -DnewVersion=${{ inputs.src_profile }}
+        
       - name: Build with Maven
         run: |-
           mvn -B package #file name cames from tag
