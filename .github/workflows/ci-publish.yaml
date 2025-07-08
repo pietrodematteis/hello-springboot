@@ -59,15 +59,6 @@ jobs:
       - name: list files
         run: ls -la target
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: my-artifact # NOTE: same artifact name
-          path: |-
-            target/*.jar
-            target/bom.json
-          overwrite: true
-          
       #- name: Release
       #  uses: softprops/action-gh-release@v2
       #  with:
@@ -75,13 +66,13 @@ jobs:
       #    files: |
       #      target/bom.json
             
-      #- name: Update Release
-      #  env:
-      #    GH_TOKEN: ${{ github.token }}
-      #  run: |-
-      #    gh release upload ${{ needs.read-version.outputs.version }} \
-      #      --clobber \
-      #      target/bom.json
+      - name: Update Release
+        env:
+          GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
+        run: |-
+          gh release upload ${{ needs.read-version.outputs.version }} \
+            --clobber \
+            target/bom.json
 
 #target/hello-springboot*.jar \
             
