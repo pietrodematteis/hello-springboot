@@ -67,11 +67,16 @@ jobs:
           name: assembled-wars
           path: target
 
+      - name: list files
+        run: ls -la
+      
       - name: Update Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |-
           gh release upload ${{ needs.read-version.outputs.version }} \
             --clobber \
-            target/hello-springboot*.jar \
             target/bom.json
+
+#target/hello-springboot*.jar \
+            
