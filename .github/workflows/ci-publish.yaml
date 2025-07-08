@@ -59,20 +59,20 @@ jobs:
       - name: list files
         run: ls -la target
 
-      #- name: Release
-      #  uses: softprops/action-gh-release@v2
-      #  with:
-      #    token: ${{ github.token }}
-      #    files: |
-      #      target/bom.json
-            
-      - name: Update Release
-        env:
-          GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-        run: |-
-          gh release upload ${{ needs.read-version.outputs.version }} \
-            --clobber \
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.BOT_PUBLISH_TOKEN }}
+          files: |
             target/bom.json
+            
+      #- name: Update Release
+      #  env:
+      #    GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
+      #  run: |-
+      #    gh release upload ${{ needs.read-version.outputs.version }} \
+      #      --clobber \
+      #      target/bom.json
 
 #target/hello-springboot*.jar \
             
