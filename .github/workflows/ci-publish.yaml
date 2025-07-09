@@ -64,7 +64,7 @@ jobs:
 
       - name: Authenticate GitHub CLI
         env:
-         GH_TOKEN:${{ secrets.PERSONAL_GITHUB_TOKEN }} # or use github.token if
+         GH_TOKEN:${{ secrets.BOT_PUBLISH_TOKEN }} # or use github.token if
         run: echo "Authenticated"
           
       - name: Create or update release
