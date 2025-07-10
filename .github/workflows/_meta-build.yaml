@@ -55,7 +55,7 @@ jobs:
           docker run --rm \
             -v $(pwd):/app:rw \
             -v /tmp:/tmp \
-            -t ghcr.io/cyclonedx/cdxgen:sha256-f6181b062489612ad73d933dbda7f052eb14d6b55ea0bd1e995a449fb6a2397b \ # tag=v11.4.3
+            -t ghcr.io/cyclonedx/cdxgen:v11.4.3@sha256:a7f032771f4937468dc288f8e94d292e84fb4f698bbd8b0c3a059838bb481277 \
             -r /app -o /tmp/bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
 
