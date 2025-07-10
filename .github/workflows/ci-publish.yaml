@@ -50,7 +50,7 @@ jobs:
       - read-version
       - call-build
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository #required to use gh CLI
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
 
       - name: Download Artifacts
@@ -62,19 +62,12 @@ jobs:
       - name: list files
         run: ls -la target
 
-      - name: Show gh CLI version
-        env:
-         GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-        run: gh --version
-
-      - name: View release
-        env:
-         GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-        run: gh release view ${{ needs.read-version.outputs.version }}
-  
       - name: Create or update release
         env:
-         GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-        run: gh release upload ${{ needs.read-version.outputs.version }} target/bom.json --clobber
+         GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }} #personal access token, with repo scope
+        run: gh release upload ${{ needs.read-version.outputs.version }} \
+             target/bom.json \
+             target/*${{ needs.read-version.outputs.version }}.jar \
+             --clobber
 
             
