@@ -7,9 +7,6 @@ on:
     types:
       - released
   #workflow_dispatch:
-
-env:
-  ARTIFACT_NAME: 'assembled-package'
   
 permissions: { }
 
@@ -41,7 +38,7 @@ jobs:
       publish-container: true
       ref-name: ${{ github.ref_name }}
       src_profile: 'license-compliance'
-      artifact_name: ${{ vars.ARTIFACT_NAME }}
+      artifact_name: 'assembled-package'
     permissions:
       security-events: write # Required to upload trivy's SARIF output
     secrets:
@@ -60,7 +57,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # tag=v4.3.0
         with:
-          name: ${{ vars.ARTIFACT_NAME }}
+          name: 'assembled-package'
           path: target
 
       - name: list files
