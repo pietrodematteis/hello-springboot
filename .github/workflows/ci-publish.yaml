@@ -41,7 +41,7 @@ jobs:
       publish-container: true
       ref-name: ${{ github.ref_name }}
       src_profile: 'license-compliance'
-      artifact_name: ${{ env.ARTIFACT_NAME }}
+      artifact_name: ${ env.ARTIFACT_NAME }
     permissions:
       security-events: write # Required to upload trivy's SARIF output
     secrets:
@@ -60,7 +60,7 @@ jobs:
       - name: Download Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # tag=v4.3.0
         with:
-          name: ${{ env.ARTIFACT_NAME }}
+          name: ${ env.ARTIFACT_NAME }
           path: target
 
       - name: list files
