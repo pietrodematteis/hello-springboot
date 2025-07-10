@@ -50,6 +50,9 @@ jobs:
       - read-version
       - call-build
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
+
       - name: Download Artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # tag=v4.3.0
         with:
@@ -63,26 +66,15 @@ jobs:
         env:
          GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
         run: gh --version
-        
+
+      - name: View release
+        env:
+         GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
+        run: gh release view ${{ needs.read-version.outputs.version }}
+  
       - name: Create or update release
         env:
          GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-        run: gh release upload ${{ needs.read-version.outputs.version }} --clobber target/bom.json
+        run: gh release upload ${{ needs.read-version.outputs.version }} target/bom.json --clobber
 
-      #- name: Release
-      #  uses: softprops/action-gh-release@v2
-      #  with:
-      #    token: ${{ secrets.BOT_PUBLISH_TOKEN }}
-      #    files: |
-      #      target/bom.json
-            
-      #- name: Update Release
-      #  env:
-      #    GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }}
-      #  run: |-
-      #    gh release upload ${{ needs.read-version.outputs.version }} \
-      #      --clobber \
-      #      target/bom.json
-
-#target/hello-springboot*.jar \
             
