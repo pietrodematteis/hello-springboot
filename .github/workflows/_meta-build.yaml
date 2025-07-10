@@ -25,6 +25,10 @@ on:
         type: string
         required: false
         default: 'generic'
+      artifact_name:
+        description: 'Name to use for the artifact'
+        type: string
+        required: true
     secrets:
       registry-0-usr:
         required: true
@@ -50,7 +54,7 @@ jobs:
       - name: Override project version with info camimg from tag
         run: mvn versions:set -DnewVersion=${{ inputs.app-version }}
         
-      - name: Generate SBOM using cdxgen container
+      - name: Generate SBOM using cdxgen container, IMPORTANT to select the image that best matches with the context
         run: |
           docker run --rm \
             -v $(pwd):/app:rw \
@@ -65,13 +69,23 @@ jobs:
       
       - name: Copy SBOM into target folder
         run: cp /tmp/bom.json  $(pwd)/target/bom.json
-        
+      
+      - name: Generate SHA256 checksums
+        run: |
+          cd target
+          for file in *.jar bom.json; do
+            sha256sum "$file" > "$file.sha256"
+          done
+    
       - name: Upload Artifacts
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
         with:
-          name: assembled-wars
+          name: ${{ inputs.artifact_name }}
           path: |-
             target/*.jar
             target/bom.json
+            target/*.sha256
+      
+
 
   
