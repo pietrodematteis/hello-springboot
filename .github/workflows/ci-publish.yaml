@@ -62,10 +62,11 @@ jobs:
       - name: list files
         run: ls -la target
 
-      - name: Create or update release
+      - name: Update release adding package and SBOM
         env:
          GH_TOKEN: ${{ secrets.BOT_PUBLISH_TOKEN }} #personal access token, with repo scope
-        run: gh release upload ${{ needs.read-version.outputs.version }} \
+        run: |
+           gh release upload ${{ needs.read-version.outputs.version }} \
              target/bom.json \
              target/*${{ needs.read-version.outputs.version }}.jar \
              --clobber
