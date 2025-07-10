@@ -31,6 +31,7 @@ jobs:
       ref-name: ${{ github.ref_name }}
       src_profile: 'license-compliance'
       src_type: 'java'
+      artifact_name: 'assembled-package'
     permissions:
       security-events: write # Required to upload trivy's SARIF output
     secrets:
