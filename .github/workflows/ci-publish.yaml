@@ -6,8 +6,6 @@ on:
   release:
     types:
       - released
-  #workflow_dispatch:
-
 env:
   # name of the package
   ARTIFACTNAME: artifact-package
