@@ -90,7 +90,7 @@ jobs:
       - name: Generate SHA256 checksums
         run: |
           cd target
-          for file in *.jar bom.json; do
+          for file in *.jar *bom.json; do
             sha256sum "$file" > "$file.sha256"
           done
     
