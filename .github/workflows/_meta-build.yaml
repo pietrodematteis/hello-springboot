@@ -81,7 +81,7 @@ jobs:
             -v $(pwd)/target:/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:v11.4.3@sha256:a7f032771f4937468dc288f8e94d292e84fb4f698bbd8b0c3a059838bb481277 \
-            -r /app -o /tmp/package-bom.json -t ${{ inputs.src_type }} \
+            -r /app -o /tmp/package-bom.json -t jar \
             --profile ${{ inputs.src_profile }} --json-pretty
 
       - name: Copy SBOM into target folder
