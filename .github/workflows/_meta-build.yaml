@@ -60,21 +60,32 @@ jobs:
       - name: Override project version with info camimg from tag
         run: mvn versions:set -DnewVersion=${{ inputs.app-version }}
         
-      - name: Generate SBOM using cdxgen container, IMPORTANT to select the image that best matches with the context
+      - name: Generate SBOM using cdxgen from src code
+        #IMPORTANT: to select the image that best matches with the context
         run: |
           docker run --rm \
             -v $(pwd):/app:rw \
             -v /tmp:/tmp \
             -t ghcr.io/cyclonedx/cdxgen:v11.4.3@sha256:a7f032771f4937468dc288f8e94d292e84fb4f698bbd8b0c3a059838bb481277 \
-            -r /app -o /tmp/bom.json -t ${{ inputs.src_type }} \
+            -r /app -o /tmp/src-bom.json -t ${{ inputs.src_type }} \
             --profile ${{ inputs.src_profile }} --json-pretty
 
       - name: Build with Maven
         run: |-
           mvn -B package 
-      
+
+      - name: Generate SBOM using cdxgen container from jar 
+        #IMPORTANT to select the image that best matches with the context
+        run: |
+          docker run --rm \
+            -v $(pwd)/target:/app:rw \
+            -v /tmp:/tmp \
+            -t ghcr.io/cyclonedx/cdxgen:v11.4.3@sha256:a7f032771f4937468dc288f8e94d292e84fb4f698bbd8b0c3a059838bb481277 \
+            -r /app -o /tmp/package-bom.json -t ${{ inputs.src_type }} \
+            --profile ${{ inputs.src_profile }} --json-pretty
+
       - name: Copy SBOM into target folder
-        run: cp /tmp/bom.json  $(pwd)/target/bom.json
+        run: cp /tmp/*bom.json  $(pwd)/target/
       
       - name: Generate SHA256 checksums
         run: |
@@ -89,7 +100,7 @@ jobs:
           name: ${{ inputs.artifact_name }}
           path: |-
             target/*.jar
-            target/bom.json
+            target/*bom.json
             target/*.sha256
  
   build-container:
