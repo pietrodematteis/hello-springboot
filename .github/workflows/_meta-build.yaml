@@ -150,7 +150,7 @@ jobs:
         uses: docker/build-push-action@v6.18.0 # v5.0.0
         with:
           context: .
-          file:	./src/main/docker/Dockerfile
+          file:	./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
