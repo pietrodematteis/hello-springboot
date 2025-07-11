@@ -92,7 +92,8 @@ jobs:
     #  security-events: write # Required to upload trivy's SARIF output
     needs:
       - build-java
-
+    if: ${{ inputs.publish-container }}
+    
     steps:
       - name: Checkout Repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # tag=v4.2.2
