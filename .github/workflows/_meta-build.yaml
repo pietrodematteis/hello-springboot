@@ -30,9 +30,9 @@ on:
         type: string
         required: true
     secrets:
-      registry-0-usr:
+      REGISTRY_USER:
         required: true
-      registry-0-psw:
+      REGISTRY_TOKEN:
         required: true
 
 env:
@@ -121,8 +121,8 @@ jobs:
         if: ${{ inputs.publish-container }}
         with:
           registry: ${{ env.REGISTRY }}
-          username: ${{ secrets.registry-0-usr }}
-          password: ${{ secrets.registry-0-psw }}
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_TOKEN }}
        
       # Extract metadata (tags, labels) for Docker
       # https://github.com/docker/metadata-action
