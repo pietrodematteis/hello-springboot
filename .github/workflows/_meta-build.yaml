@@ -35,6 +35,12 @@ on:
       registry-0-psw:
         required: true
 
+env:
+  # Use docker.io for Docker Hub if empty
+  REGISTRY: docker.io
+  # github.repository as <account>/<repo>
+  IMAGE_NAME: pietrodematteis/hello-springboot
+
 permissions: { }
 
 jobs:
@@ -114,48 +120,42 @@ jobs:
         uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # tag=v3.4.0
         if: ${{ inputs.publish-container }}
         with:
-          registry: docker.io
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.registry-0-usr }}
           password: ${{ secrets.registry-0-psw }}
-
-      - name: Set Container Tags
-        id: tags
-        run: |-
-          IMAGE_NAME="docker.io/dependencytrack/${{ matrix.distribution }}"
-          REF_NAME="${{ inputs.ref-name }}"
-          TAGS=""
-          TAGS_ALPINE=""
-          
-          if [[ $REF_NAME == feature-* ]]; then
-            TAGS="${IMAGE_NAME}:${REF_NAME,,}"
-            TAGS_ALPINE="${IMAGE_NAME}:${REF_NAME,,}-alpine"
-          else
-            TAGS="${IMAGE_NAME}:${{ inputs.app-version }}"
-            TAGS_ALPINE="${IMAGE_NAME}:${{ inputs.app-version }}-alpine"
-            if [[ "${{ inputs.app-version }}" != "snapshot" ]]; then
-              TAGS="${TAGS},${IMAGE_NAME}:latest"
-              TAGS_ALPINE="${TAGS_ALPINE},${IMAGE_NAME}:latest-alpine"
-            fi
-          fi
-          echo "tags=${TAGS}" >> $GITHUB_OUTPUT
-          echo "tags-alpine=${TAGS_ALPINE}" >> $GITHUB_OUTPUT
-
-      - name: Run Trivy Vulnerability Scanner
-        if: ${{ inputs.publish-container }}
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # tag=0.31.0
-        env:
-          # https://github.com/aquasecurity/trivy-action/issues/389
-          TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
-          TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
+       
+      # Extract metadata (tags, labels) for Docker
+      # https://github.com/docker/metadata-action
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@96383f45573cb7f253c731d3b3ab81c87ef81934 # v5.0.0
         with:
-          image-ref: docker.io/dependencytrack/${{ matrix.distribution }}:${{ inputs.app-version }}
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          ignore-unfixed: true
-          vuln-type: 'os'
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
-      - name: Upload Trivy Scan Results to GitHub Security Tab
-        if: ${{ inputs.publish-container }}
-        uses: github/codeql-action/upload-sarif@181d5eefc20863364f96762470ba6f862bdef56b # tag=v3.29.2
+      # Build and push Docker image with Buildx (don't push on PR)
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@0565240e2d4ab88bba5387d719585280857ece09 # v5.0.0
         with:
-          sarif_file: 'trivy-results.sarif'
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      #- name: Run Trivy Vulnerability Scanner
+      #  if: ${{ inputs.publish-container }}
+      #  uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # tag=0.31.0
+      #  env:
+      #    # https://github.com/aquasecurity/trivy-action/issues/389
+      #    TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
+      #    TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
+      #  with:
+      #    image-ref: docker.io/dependencytrack/${{ matrix.distribution }}:${{ inputs.app-version }}
+      #    format: 'sarif'
+      #    output: 'trivy-results.sarif'
+      #    ignore-unfixed: true
+      #    vuln-type: 'os'
+
