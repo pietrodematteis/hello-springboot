@@ -41,8 +41,8 @@ jobs:
     permissions:
       security-events: write # Required to upload trivy's SARIF output
     secrets:
-      registry-0-usr: ${{ secrets.HUB_USERNAME }}
-      registry-0-psw: ${{ secrets.HUB_ACCESSS_TOKEN }}
+      REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
+      REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
 
   update-github-release:
     runs-on: ubuntu-latest
