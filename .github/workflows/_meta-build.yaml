@@ -205,10 +205,4 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'library'
           scanners: 'license'
-      
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
-        with:
-          name: ${{ inputs.artifact_name }}-Container
-          path: |-
-            target/*SBOM.json
+
