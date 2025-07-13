@@ -27,7 +27,8 @@ jobs:
     uses: ./.github/workflows/_meta-build.yaml
     with:
       app-version: "snapshot"
-      publish-container: ${{ github.ref_name == 'main' || startsWith(github.ref_name, 'feature-') }} # publish container only for commit on main or feature branch
+      #publish-container: ${{ github.ref_name == 'main' || startsWith(github.ref_name, 'feature-') }} # publish container only for commit on main or feature branch
+      publish-container: false
       ref-name: ${{ github.ref_name }}
       src_profile: 'license-compliance'
       src_type: 'java'
