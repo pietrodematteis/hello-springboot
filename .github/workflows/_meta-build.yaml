@@ -158,7 +158,7 @@ jobs:
         id: base-img
         run: |
           BASE_IMAGE=$(grep -i '^FROM' ./Dockerfile | head -n 1 | awk '{print $2}')
-          echo "Base image is: $BASE_IMAGE"
+          echo "Base image is: $BASE_IMAGE" >> $base_image
          
       - name: Run Trivy to generate SBOM with license from base Image
         if: ${{ inputs.publish-container }}
@@ -168,7 +168,7 @@ jobs:
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ steps.base-img.BASE_IMAGE }}
+          image-ref: ${{ env.REGISTRY }}/${{ steps.base-img.outputs.base_image }}
           format: 'cyclonedx'
           output: 'BASE_IMAGE_SBOM.json'
           ignore-unfixed: true
