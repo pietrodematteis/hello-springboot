@@ -155,6 +155,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Parse Dockerfile for base image
+        id: base-img
         run: |
           BASE_IMAGE=$(grep -i '^FROM' ./Dockerfile | head -n 1 | awk '{print $2}')
           echo "Base image is: $BASE_IMAGE"
@@ -167,7 +168,7 @@ jobs:
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ BASE_IMAGE }}
+          image-ref: ${{ env.REGISTRY }}/${{ steps.base-img.BASE_IMAGE }}
           format: 'cyclonedx'
           output: 'BASE_IMAGE_SBOM.json'
           ignore-unfixed: true
