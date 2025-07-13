@@ -163,7 +163,7 @@ jobs:
          
       - name: Run Trivy to generate SBOM with license from base Image
         if: ${{ inputs.publish-container }}
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # tag=0.31.0
+        uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
@@ -178,13 +178,13 @@ jobs:
 
       - name: Run Trivy to generate SBOM with license from os using generated Docker Image
         if: ${{ inputs.publish-container }}
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # tag=0.31.0
+        uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
           output: 'OS-SBOM.json'
           ignore-unfixed: true
@@ -193,13 +193,13 @@ jobs:
 
       - name: Run Trivy to generate SBOM with license from library using generated Docker Image
         if: ${{ inputs.publish-container }}
-        uses: aquasecurity/trivy-action@76071ef0d7ec797419534a183b498b4d6366cf37 # tag=0.31.0
+        uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
           output: 'LIBRARY-SBOM.json'
           ignore-unfixed: true
