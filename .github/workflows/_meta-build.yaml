@@ -177,7 +177,7 @@ jobs:
           scanners: 'license'
 
       - name: Run Trivy to generate SBOM with license from os using generated Docker Image
-        if: ${{ inputs.publish-container }}
+        if: false # ${{ inputs.publish-container }}
         uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
@@ -192,7 +192,7 @@ jobs:
           scanners: 'license'
 
       - name: Run Trivy to generate SBOM with license from library using generated Docker Image
-        if: ${{ inputs.publish-container }}
+        if: false # ${{ inputs.publish-container }}
         uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
