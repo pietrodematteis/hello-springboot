@@ -179,7 +179,8 @@ jobs:
       - name: Parse image from outputs.tags
         id: parse-img
         run: |
-          FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | jq -r '.[0]')
+          TAGS='${{ steps.meta.outputs.tags }}'
+          FIRST_TAG=$(echo "$TAGS" | head -n 1)
           echo "First tag is: $FIRST_TAG"
           echo "IMAGE_NAME_OUTPUT=$FIRST_TAG" >> $GITHUB_OUTPUT
           
