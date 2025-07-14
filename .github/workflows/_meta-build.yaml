@@ -154,16 +154,7 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
   
-      - name: print info for debug
-        run: |
-          echo "steps.meta.outputs.tags: ${{ steps.meta.outputs.tags }}"
-          echo "steps.meta.outputs.version: ${{ steps.meta.outputs.version }}"
-          echo "steps.meta.outputs.labels: ${{ steps.meta.outputs.labels }}"
-          echo "steps.build-and-push.outputs.imageid: ${{ steps.build-and-push.outputs.imageid }}"
-          echo "steps.build-and-push.outputs.digest: ${{ steps.build-and-push.outputs.digest }}"
-          echo "steps.build-and-push.outputs.metadata: ${{ steps.build-and-push.outputs.metadata }}"
-          
-      - name: Parse Dockerfile for base image
+      - name: Parse base image from Dockerfile
         id: base-img
         run: |
           BASE_IMAGE=$(grep -i '^FROM' ./Dockerfile | head -n 1 | awk '{print $2}')
@@ -184,7 +175,14 @@ jobs:
           ignore-unfixed: true
           vuln-type: 'os,library'
           scanners: 'license'
-
+  
+      - name: Parse image from outputs.tags
+        id: parse-img
+        run: |
+          FIRST_TAG=$(echo "${{ steps.meta.outputs.tags }}" | jq -r '.[0]')
+          echo "First tag is: $FIRST_TAG"
+          echo "IMAGE_NAME_OUTPUT=$FIRST_TAG" >> $GITHUB_OUTPUT
+          
       - name: Run Trivy to generate SBOM with license from os using generated Docker Image
         #if: false
         uses: aquasecurity/trivy-action@0.32.0
@@ -193,7 +191,7 @@ jobs:
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.parse-img.outputs.IMAGE_NAME_OUTPUT }}
           format: 'cyclonedx'
           output: 'released_image_os_bom.json'
           #ignore-unfixed: true
@@ -209,7 +207,7 @@ jobs:
           TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db:2"
           TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
         with:
-          image-ref: ${{ steps.meta.outputs.tags }}
+          image-ref: ${{ steps.parse-img.outputs.IMAGE_NAME_OUTPUT }}
           format: 'cyclonedx'
           output: 'released_image_libs_bom.json'
           #ignore-unfixed: true
