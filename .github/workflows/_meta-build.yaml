@@ -153,7 +153,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
+  
+      - name: print info for debug
+        run: |
+          echo "steps.meta.outputs.tags: ${{ steps.meta.outputs.tags }}"
+          echo "steps.meta.outputs.version: ${{ steps.meta.outputs.version }}"
+          echo "steps.meta.outputs.labels: ${{ steps.meta.outputs.labels }}"
+          
       - name: Parse Dockerfile for base image
         id: base-img
         run: |
