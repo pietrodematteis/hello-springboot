@@ -177,7 +177,7 @@ jobs:
           scanners: 'license'
 
       - name: Run Trivy to generate SBOM with license from os using generated Docker Image
-        if: false # ${{ inputs.publish-container }}
+        #if: false
         uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
@@ -187,12 +187,13 @@ jobs:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
           output: 'released_image_os_bom.json'
-          ignore-unfixed: true
+          #ignore-unfixed: true
           vuln-type: 'os'
           scanners: 'license'
+          exit-code: '0'
 
       - name: Run Trivy to generate SBOM with license from library using generated Docker Image
-        if: false # ${{ inputs.publish-container }}
+        #if: false
         uses: aquasecurity/trivy-action@0.32.0
         env:
           # https://github.com/aquasecurity/trivy-action/issues/389
@@ -202,9 +203,10 @@ jobs:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
           output: 'released_image_libs_bom.json'
-          ignore-unfixed: true
+          #ignore-unfixed: true
           vuln-type: 'library'
           scanners: 'license'
+          exit-code: '0'
 
       - name: list files
         run: ls -la
