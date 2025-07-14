@@ -171,7 +171,7 @@ jobs:
         with:
           image-ref: ${{ env.REGISTRY }}/${{ steps.base-img.outputs.BASE_IMAGE_OUTPUT }}
           format: 'cyclonedx'
-          output: 'BASE_IMAGE_SBOM.json'
+          output: 'base_image_bom.json'
           ignore-unfixed: true
           vuln-type: 'os,library'
           scanners: 'license'
@@ -186,7 +186,7 @@ jobs:
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
-          output: 'OS-SBOM.json'
+          output: 'released_image_os_bom.json'
           ignore-unfixed: true
           vuln-type: 'os'
           scanners: 'license'
@@ -201,8 +201,23 @@ jobs:
         with:
           image-ref: ${{ steps.meta.outputs.tags }}
           format: 'cyclonedx'
-          output: 'LIBRARY-SBOM.json'
+          output: 'released_image_libs_bom.json'
           ignore-unfixed: true
           vuln-type: 'library'
           scanners: 'license'
 
+      - name: list files
+        run: ls -la
+        
+      - name: Copy SBOM into target folder
+        run: cp *bom.json  $(pwd)/target/
+        
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # tag=v4.6.2
+        with:
+          name: ${{ inputs.artifact_name }}
+          path: |-
+            target/*.jar
+            target/*bom.json
+            target/*.sha256
+            
